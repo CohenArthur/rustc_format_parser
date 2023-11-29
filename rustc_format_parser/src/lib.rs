@@ -951,6 +951,7 @@ impl<'a> Parser<'a> {
 /// Finds the indices of all characters that have been processed and differ between the actual
 /// written code (code snippet) and the `InternedString` that gets processed in the `Parser`
 /// in order to properly synthesise the intra-string `Span`s for error diagnostics.
+// TODO: Can we give an escaped string here? probably yes - and a valid one too
 fn find_width_map_from_snippet(
     input: &str,
     snippet: Option<string::String>,
@@ -1077,18 +1078,21 @@ fn find_width_map_from_snippet(
 // Store it in the parser struct? we need to make it FFI-aware
 // SO this is not possible because we need `unescape_string` *before* we have a parser
 
-// fn unescape_string(string: &str) -> Option<string::String> {
-//     let mut buf = string::String::new();
-//     let mut ok = true;
-//     unescape::unescape_literal(string, unescape::Mode::Str, &mut |_, unescaped_char| {
-//         match unescaped_char {
-//             Ok(c) => buf.push(c),
-//             Err(_) => ok = false,
-//         }
-//     });
+fn unescape_string(string: &str) -> Option<string::String> {
+    // let mut buf = string::String::new();
+    // let mut ok = true;
+    // unescape::unescape_literal(string, unescape::Mode::Str, &mut |_, unescaped_char| {
+    //     match unescaped_char {
+    //         Ok(c) => buf.push(c),
+    //         Err(_) => ok = false,
+    //     }
+    // });
 
-//     ok.then_some(buf)
-// }
+    let buf = string::String::from(string);
+    let ok = true;
+
+    ok.then_some(buf)
+}
 
 // Assert a reasonable size for `Piece`
 // #[cfg(all(target_arch = "x86_64", target_pointer_width = "64"))]

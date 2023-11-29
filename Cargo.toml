@@ -1,9 +1,21 @@
 [package]
-name = "rustc_format_parser"
+name = "rfp-suite"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[workspace]
+
+members = [
+  "rfp-ffi",
+  "rustc_format_parser",
+]
+
 [dependencies]
-unicode-xid = "0.2.0"
+rfp-ffi = { path = "rfp-ffi" }
+rustc_format_parser = { path = "rustc_format_parser" }
+
+[[bin]]
+name = "rfp-bin-test"
+path = "src/bin.rs"
