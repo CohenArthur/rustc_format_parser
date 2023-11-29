@@ -14,7 +14,17 @@
 // WARNING: We want to be able to build this crate with a stable compiler,
 //          so no `#![feature]` attributes should be added!
 
-use rustc_lexer::unescape;
+#[deprecated(note = "Use a proper lexer function for this")]
+fn is_id_start(c: char) -> bool {
+    c == '_' || unicode_xid::UnicodeXID::is_xid_start(c)
+}
+
+#[deprecated(note = "Use a proper lexer function for this")]
+fn is_id_continue(c: char) -> bool {
+    unicode_xid::UnicodeXID::is_xid_continue(c)
+}
+
+// use rustc_lexer::unescape;
 pub use Alignment::*;
 pub use Count::*;
 pub use Piece::*;
@@ -594,7 +604,7 @@ impl<'a> Parser<'a> {
             Some(ArgumentIs(i))
         } else {
             match self.cur.peek() {
-                Some(&(lo, c)) if rustc_lexer::is_id_start(c) => {
+                Some(&(lo, c)) if is_id_start(c) => {
                     let word = self.word();
 
                     // Recover from `r#ident` in format strings.
@@ -604,7 +614,7 @@ impl<'a> Parser<'a> {
                             if self.input[pos + 1..]
                                 .chars()
                                 .next()
-                                .is_some_and(rustc_lexer::is_id_start)
+                                .is_some_and(is_id_start)
                             {
                                 self.cur.next();
                                 let word = self.word();
@@ -820,7 +830,7 @@ impl<'a> Parser<'a> {
     /// Rust identifier, except that it can't start with `_` character.
     fn word(&mut self) -> &'a str {
         let start = match self.cur.peek() {
-            Some(&(pos, c)) if rustc_lexer::is_id_start(c) => {
+            Some(&(pos, c)) if is_id_start(c) => {
                 self.cur.next();
                 pos
             }
@@ -830,7 +840,7 @@ impl<'a> Parser<'a> {
         };
         let mut end = None;
         while let Some(&(pos, c)) = self.cur.peek() {
-            if rustc_lexer::is_id_continue(c) {
+            if is_id_continue(c) {
                 self.cur.next();
             } else {
                 end = Some(pos);
@@ -1063,22 +1073,26 @@ fn find_width_map_from_snippet(
     InputStringKind::Literal { width_mappings }
 }
 
-fn unescape_string(string: &str) -> Option<string::String> {
-    let mut buf = string::String::new();
-    let mut ok = true;
-    unescape::unescape_literal(string, unescape::Mode::Str, &mut |_, unescaped_char| {
-        match unescaped_char {
-            Ok(c) => buf.push(c),
-            Err(_) => ok = false,
-        }
-    });
+// TODO: I guess we can provide an `unescape_string` function to the parser... but how do we do that
+// Store it in the parser struct? we need to make it FFI-aware
+// SO this is not possible because we need `unescape_string` *before* we have a parser
 
-    ok.then_some(buf)
-}
+// fn unescape_string(string: &str) -> Option<string::String> {
+//     let mut buf = string::String::new();
+//     let mut ok = true;
+//     unescape::unescape_literal(string, unescape::Mode::Str, &mut |_, unescaped_char| {
+//         match unescaped_char {
+//             Ok(c) => buf.push(c),
+//             Err(_) => ok = false,
+//         }
+//     });
+
+//     ok.then_some(buf)
+// }
 
 // Assert a reasonable size for `Piece`
-#[cfg(all(target_arch = "x86_64", target_pointer_width = "64"))]
-rustc_index::static_assert_size!(Piece<'_>, 16);
+// #[cfg(all(target_arch = "x86_64", target_pointer_width = "64"))]
+// rustc_index::static_assert_size!(Piece<'_>, 16);
 
 // #[cfg(test)]
 // mod tests;
