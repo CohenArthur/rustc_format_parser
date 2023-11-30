@@ -1,5 +1,7 @@
-use rfp_ffi::collect_pieces;
+use rfp_ffi::rust;
 
 fn main() {
-    dbg!(collect_pieces(std::env::args().nth(1).unwrap().as_str()));
+    dbg!(rust::collect_pieces(
+        std::env::args().nth(1).unwrap().as_str()
+    ));
 }
