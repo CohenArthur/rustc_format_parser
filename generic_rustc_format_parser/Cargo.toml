@@ -1,5 +1,5 @@
 [package]
-name = "rustc_format_parser"
+name = "generic_rustc_format_parser"
 version = "0.1.0"
 edition = "2021"
 

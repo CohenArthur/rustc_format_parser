@@ -7,7 +7,8 @@ use std::ffi::CStr;
 
 pub mod rust;
 
-use rustc_format_parser::Piece;
+// TODO: Use rustc's version here (#3)
+use generic_rustc_format_parser::Piece;
 
 #[repr(C)]
 pub struct PieceSlice {

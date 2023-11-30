@@ -3,17 +3,19 @@ name = "rfp-ffi"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [workspace]
 
 members = [
-  "rustc_format_parser",
+  "generic_rustc_format_parser",
 ]
 
 [dependencies]
 libc = "0.2"
-rustc_format_parser = { path = "rustc_format_parser" }
+generic_rustc_format_parser = { path = "generic_rustc_format_parser" }
 
 [lib]
-crate_type = ["staticlib"]
+crate_type = ["staticlib", "rlib"]
+
+[[bin]]
+name = "rfp-test"
+path = "src/bin.rs"
