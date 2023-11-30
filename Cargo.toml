@@ -1,5 +1,5 @@
 [package]
-name = "rfp-suite"
+name = "rfp-ffi"
 version = "0.1.0"
 edition = "2021"
 
@@ -8,14 +8,12 @@ edition = "2021"
 [workspace]
 
 members = [
-  "rfp-ffi",
   "rustc_format_parser",
 ]
 
 [dependencies]
-rfp-ffi = { path = "rfp-ffi" }
+libc = "0.2"
 rustc_format_parser = { path = "rustc_format_parser" }
 
-[[bin]]
-name = "rfp-bin-test"
-path = "src/bin.rs"
+[lib]
+crate_type = ["staticlib"]
