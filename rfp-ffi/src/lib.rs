@@ -11,7 +11,7 @@ use rustc_format_parser::Piece;
 
 #[repr(C)]
 pub struct PieceSlice {
-    base_ptr: *const Piece<'static>,
+    base_ptr: *const Piece<'static /* FIXME: That's wrong */>,
     len: usize,
 }
 
